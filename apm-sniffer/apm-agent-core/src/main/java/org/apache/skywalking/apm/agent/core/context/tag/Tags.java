@@ -83,6 +83,12 @@ public final class Tags {
         public static final StringTag PARAMS = new StringTag(11, "http.params", true);
     }
 
+    public static final class DUBBO {
+        public static final StringTag DUBBO_REQUEST_PARAMS = new StringTag(12, "dubbo.request_params");
+
+        public static final StringTag DUBBO_RESPONSE_PARAMS = new StringTag(13, "dubbo.response_params");
+    }
+
     /**
      * Creates a {@code StringTag} with the given key and cache it, if it's created before, simply return it without
      * creating a new one.

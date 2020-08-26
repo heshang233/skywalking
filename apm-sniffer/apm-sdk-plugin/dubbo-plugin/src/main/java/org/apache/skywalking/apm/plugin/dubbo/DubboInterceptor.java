@@ -24,6 +24,8 @@ import com.alibaba.dubbo.rpc.Invoker;
 import com.alibaba.dubbo.rpc.Result;
 import com.alibaba.dubbo.rpc.RpcContext;
 import java.lang.reflect.Method;
+
+import com.google.gson.Gson;
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.CarrierItem;
@@ -41,6 +43,9 @@ import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
  * of dubbo framework below 2.8.3 don't support {@link RpcContext#attachments}, we support another way to support it.
  */
 public class DubboInterceptor implements InstanceMethodsAroundInterceptor {
+
+    private Gson gson = new Gson();
+
     /**
      * <h2>Consumer:</h2> The serialized trace context data will
      * inject to the {@link RpcContext#attachments} for transport to provider side.
@@ -87,6 +92,7 @@ public class DubboInterceptor implements InstanceMethodsAroundInterceptor {
 
         Tags.URL.set(span, generateRequestURL(requestURL, invocation));
         span.setComponent(ComponentsDefine.DUBBO);
+        Tags.DUBBO.DUBBO_REQUEST_PARAMS.set(span, gson.toJson(invocation.getArguments()));
         SpanLayer.asRPCFramework(span);
     }
 
@@ -96,6 +102,8 @@ public class DubboInterceptor implements InstanceMethodsAroundInterceptor {
         Result result = (Result) ret;
         if (result != null && result.getException() != null) {
             dealException(result.getException());
+        } else {
+            Tags.DUBBO.DUBBO_RESPONSE_PARAMS.set(ContextManager.activeSpan(), gson.toJson(result.getValue()));
         }
 
         ContextManager.stopSpan();
