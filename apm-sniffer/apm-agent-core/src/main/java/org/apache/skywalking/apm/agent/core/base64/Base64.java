@@ -31,11 +31,11 @@ public final class Base64 {
     }
 
     public static String decode2UTFString(String in) {
-        return new String(DECODER.decode(in), StandardCharsets.UTF_8);
+        return new String(DECODER.decode(in.replace("%3d","=")), StandardCharsets.UTF_8);
     }
 
     public static String encode(String text) {
-        return ENCODER.encodeToString(text.getBytes(StandardCharsets.UTF_8));
+        return ENCODER.encodeToString(text.getBytes(StandardCharsets.UTF_8)).replace("=","%3d");
     }
 
 }
