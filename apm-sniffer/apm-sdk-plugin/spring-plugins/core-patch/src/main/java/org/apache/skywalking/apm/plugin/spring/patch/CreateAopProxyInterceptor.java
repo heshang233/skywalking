@@ -42,7 +42,8 @@ public class CreateAopProxyInterceptor implements InstanceMethodsAroundIntercept
         AdvisedSupport advisedSupport = (AdvisedSupport) allArguments[0];
 
         Class targetClass = advisedSupport.getTargetClass();
-        if (targetClass != null && EnhancedInstance.class.isAssignableFrom(targetClass)) {
+
+        if (targetClass != null && EnhancedInstance.class.isAssignableFrom(targetClass) && (boolean)ret) {
             return true;
         }
         return ret;
